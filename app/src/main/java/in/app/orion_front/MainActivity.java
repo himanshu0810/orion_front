@@ -1,37 +1,48 @@
 package in.app.orion_front;
-
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
+import in.app.orion_front.api.goapi;
+import in.app.orion_front.model.Signinresponse;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 public class MainActivity extends ActionBarActivity {
-
+    Button loginfacebook,logingoole;
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    String api_url;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        api_url=getResources().getString(R.string.api_url);
+        loginfacebook= (Button) findViewById(R.id.loginfacebook);
+        logingoole= (Button) findViewById(R.id.logingoogle);
+        loginfacebook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goapi goapi = new RestAdapter.Builder().setEndpoint(api_url).build().
+                        create(in.app.orion_front.api.goapi.class);
+                goapi.loginfacebook(new Callback<Signinresponse>() {
+                    @Override
+                    public void success(Signinresponse signinresponse, Response response) {
+                        Log.i("Name" , signinresponse.name);
+                    }
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.i("Error" ,error.getMessage() +"");
+                    }
+                });
+            }
+        });
+        logingoole.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
     }
 }
